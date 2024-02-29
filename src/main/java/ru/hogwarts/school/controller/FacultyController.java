@@ -7,7 +7,6 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/faculty")
@@ -59,5 +58,10 @@ public class FacultyController {
     @GetMapping("/getStudents/{id}")
     public ResponseEntity<Collection<Student>> getStudentsByFacultyId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(service.getStudentsByFacultyId(id));
+    }
+
+    @GetMapping("/getFacultyWithLongestName")
+    public ResponseEntity<String> getFacultyWithVeryLongestName() {
+        return ResponseEntity.ok(service.getFacultyWithLongestName());
     }
 }

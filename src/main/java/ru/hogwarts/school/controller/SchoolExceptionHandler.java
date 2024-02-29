@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.hogwarts.school.exception.SchoolMethodCallWithEmptyListException;
 import ru.hogwarts.school.exception.SchoolMethodArgumentNotValidException;
 
 @RestControllerAdvice
@@ -16,6 +17,12 @@ public class SchoolExceptionHandler {
     @ExceptionHandler(SchoolMethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> methodArgumentNotValidException(SchoolMethodArgumentNotValidException exception) {
         logger.error("Method call error: {}", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(SchoolMethodCallWithEmptyListException.class)
+    public ResponseEntity<ErrorMessage> methodCallWithEmptyListException(SchoolMethodCallWithEmptyListException exception) {
+        logger.error("Method call with empty list: {}", exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(exception.getMessage()));
     }
 }

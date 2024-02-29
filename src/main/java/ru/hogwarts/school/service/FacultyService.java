@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.exception.SchoolMethodArgumentNotValidException;
+import ru.hogwarts.school.exception.SchoolMethodCallWithEmptyListException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Comparator;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -91,6 +93,15 @@ public class FacultyService {
         logger.debug("Was invoked method for get students by faculty id: {}", Id);
         final Faculty findFaculty = getFacultyById(Id);
         return findFaculty.getStudents();
+    }
+
+    public String getFacultyWithLongestName() {
+        final Collection<Faculty> faculties = repository.findAll();
+        return faculties.parallelStream()
+                .map(Faculty::getName)
+                .filter(Objects::nonNull)
+                .max(Comparator.comparingInt(String::length))
+                .orElseThrow(() -> new SchoolMethodCallWithEmptyListException("Список факультетов пуст"));
     }
 
     private void checkFacultyFieldsValidValue(Faculty faculty) {
