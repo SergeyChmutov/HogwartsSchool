@@ -2,10 +2,7 @@ package ru.hogwarts.school.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.hogwarts.school.exception.SchoolMethodArgumentNotValidException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -15,12 +12,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
     private final StudentRepository repository;
-    private Logger logger = LoggerFactory.getLogger(StudentService.class);
+    private final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public StudentService(StudentRepository repository) {
         this.repository = repository;
@@ -131,6 +127,52 @@ public class StudentService {
                 .mapToInt(Student::getAge)
                 .average()
                 .orElseGet(() -> 0.0);
+    }
+
+    public void printStudentsParallel() {
+        final List<Student> students = repository.findAll();
+
+        if (students.size() < 6) {
+            throw new SchoolMethodArgumentNotValidException("В списке студентов менее 6-ти человек");
+        }
+
+        System.out.println(students.get(0));
+        System.out.println(students.get(1));
+
+        new Thread(() -> {
+            System.out.println(students.get(2));
+            System.out.println(students.get(3));
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(students.get(4));
+            System.out.println(students.get(5));
+        }).start();
+    }
+
+    public void printStudentsSynchronized() {
+        final List<Student> students = repository.findAll();
+
+        if (students.size() < 6) {
+            throw new SchoolMethodArgumentNotValidException("В списке студентов менее 6-ти человек");
+        }
+
+        printStudent(students.get(0));
+        printStudent(students.get(1));
+
+        new Thread(() -> {
+            printStudent(students.get(2));
+            printStudent(students.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printStudent(students.get(4));
+            printStudent(students.get(5));
+        }).start();
+    }
+
+    private synchronized void printStudent(Student student) {
+        System.out.println(student);
     }
 
     private void checkStudentFieldsValidValue(Student student) {

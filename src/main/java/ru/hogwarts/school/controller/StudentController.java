@@ -1,6 +1,5 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
@@ -8,8 +7,6 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/student")
@@ -27,7 +24,7 @@ public class StudentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudent(@PathVariable("id") Long Id) {
-         return ResponseEntity.ok(service.getStudentById(Id));
+        return ResponseEntity.ok(service.getStudentById(Id));
     }
 
     @PutMapping
@@ -88,5 +85,17 @@ public class StudentController {
     @GetMapping("/getStudentsAverageAgeByStream")
     public ResponseEntity<Double> getStudentsAverageAgeWithStream() {
         return ResponseEntity.ok(service.getStudentsAverageAgeWithStream());
+    }
+
+    @GetMapping("/print-parallel")
+    public ResponseEntity<String> printStudentsParallel() {
+        service.printStudentsParallel();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/print-synchronized")
+    public ResponseEntity<String> printStudentsSynchronized() {
+        service.printStudentsSynchronized();
+        return ResponseEntity.ok().build();
     }
 }
