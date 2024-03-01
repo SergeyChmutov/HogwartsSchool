@@ -79,4 +79,16 @@ public class StudentController {
     public ResponseEntity<Collection<Student>> getLastFiveStudents() {
         return ResponseEntity.ok(service.getLastFiveStudents());
     }
+
+    @GetMapping("/print-parallel")
+    public ResponseEntity<String> printStudentsParallel() {
+        service.printStudentsParallel();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/print-synchronized")
+    public ResponseEntity<String> printStudentsSynchronized() {
+        service.printStudentsSynchronized();
+        return ResponseEntity.ok().build();
+    }
 }
